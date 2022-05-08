@@ -51,6 +51,33 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "Windman1320",
+      "name": "Windman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9999486?v=4",
+      "profile": "https://github.com/Windman1320",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ericarena",
+      "name": "ericarena",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4518927?v=4",
+      "profile": "https://github.com/ericarena",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "WntFlm",
+      "name": "WntFlm",
+      "avatar_url": "https://avatars.githubusercontent.com/u/34620278?v=4",
+      "profile": "https://github.com/WntFlm",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
