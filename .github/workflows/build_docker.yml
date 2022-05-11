@@ -15,7 +15,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: xhofe/alist
+          images: zgwcome/alist
       - name: Set up Node
         uses: actions/setup-node@v2
         with:
