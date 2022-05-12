@@ -101,22 +101,22 @@ func (driver Quark) File(path string, account *model.Account) (*model.File, erro
 func (driver Quark) Files(path string, account *model.Account) ([]model.File, error) {
 	path = utils.ParsePath(path)
 	var files []model.File
-	cache, err := base.GetCache(path, account)
-	if err == nil {
-		files, _ = cache.([]model.File)
-	} else {
-		file, err := driver.File(path, account)
-		if err != nil {
-			return nil, err
-		}
-		files, err = driver.GetFiles(file.Id, account)
-		if err != nil {
-			return nil, err
-		}
-		if len(files) > 0 {
-			_ = base.SetCache(path, files, account)
-		}
+	//cache, err := base.GetCache(path, account)
+	//if err == nil {
+	//	files, _ = cache.([]model.File)
+	//} else {
+	file, err := driver.File(path, account)
+	if err != nil {
+		return nil, err
 	}
+	files, err = driver.GetFiles(file.Id, account)
+	if err != nil {
+		return nil, err
+	}
+	if len(files) > 0 {
+		_ = base.SetCache(path, files, account)
+	}
+	//}
 	return files, nil
 }
 
