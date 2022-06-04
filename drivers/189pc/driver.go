@@ -607,6 +607,7 @@ func (driver Cloud189) CommonUpload(file *model.FileStream, parentFile *model.Fi
 
 		uploadData := uploadUrl.UploadUrls[fmt.Sprint("partNumber_", i)]
 		req, _ := http.NewRequest(http.MethodPut, uploadData.RequestURL, byteData)
+		req.Header.Set("User-Agent", "")
 		for k, v := range ParseHttpHeader(uploadData.RequestHeader) {
 			req.Header.Set(k, v)
 		}
@@ -619,8 +620,10 @@ func (driver Cloud189) CommonUpload(file *model.FileStream, parentFile *model.Fi
 		}
 		if r.StatusCode != http.StatusOK {
 			data, _ := io.ReadAll(r.Body)
+			r.Body.Close()
 			return fmt.Errorf(string(data))
 		}
+		r.Body.Close()
 	}
 
 	fileMd5Hex := strings.ToUpper(hex.EncodeToString(fileMd5.Sum(nil)))
@@ -647,9 +650,10 @@ func (driver Cloud189) FastUpload(file *model.FileStream, parentFile *model.File
 	if err != nil {
 		return err
 	}
-	defer tempFile.Close()
-	defer os.Remove(tempFile.Name())
-
+	defer func() {
+		_ = tempFile.Close()
+		_ = os.Remove(tempFile.Name())
+	}()
 	// 初始化上传
 	state := GetState(account)
 
@@ -715,6 +719,7 @@ func (driver Cloud189) FastUpload(file *model.FileStream, parentFile *model.File
 		for i := 1; i <= count; i++ {
 			uploadData := uploadUrls.UploadUrls[fmt.Sprint("partNumber_", i)]
 			req, _ := http.NewRequest(http.MethodPut, uploadData.RequestURL, io.NewSectionReader(tempFile, int64(i-1)*DEFAULT, DEFAULT))
+			req.Header.Set("User-Agent", "")
 			for k, v := range ParseHttpHeader(uploadData.RequestHeader) {
 				req.Header.Set(k, v)
 			}
@@ -727,8 +732,10 @@ func (driver Cloud189) FastUpload(file *model.FileStream, parentFile *model.File
 			}
 			if r.StatusCode != http.StatusOK {
 				data, _ := io.ReadAll(r.Body)
+				r.Body.Close()
 				return fmt.Errorf(string(data))
 			}
+			r.Body.Close()
 		}
 	}
 
@@ -750,8 +757,10 @@ func (driver Cloud189) uploadFamily(file *model.FileStream, parentFile *model.Fi
 		return err
 	}
 
-	defer tempFile.Close()
-	defer os.Remove(tempFile.Name())
+	defer func() {
+			_ = tempFile.Close()
+			_ = os.Remove(tempFile.Name())
+	}()
 
 	fileMd5 := md5.New()
 	if _, err = io.Copy(io.MultiWriter(fileMd5, tempFile), file); err != nil {
@@ -799,8 +808,10 @@ func (driver Cloud189) uploadPerson(file *model.FileStream, parentFile *model.Fi
 		return err
 	}
 
-	defer tempFile.Close()
-	defer os.Remove(tempFile.Name())
+	defer func() {
+			_ = tempFile.Close()
+			_ = os.Remove(tempFile.Name())
+	}()
 
 	fileMd5 := md5.New()
 	if _, err = io.Copy(io.MultiWriter(fileMd5, tempFile), file); err != nil {
